@@ -36,13 +36,10 @@
 #define THEIA_SFM_TWOVIEW_INFO_H_
 
 #include <Eigen/Core>
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
 #include <ceres/rotation.h>
 #include <glog/logging.h>
 #include <stdint.h>
 
-#include "theia/io/eigen_serializable.h"
 #include "theia/math/rotation.h"
 #include "theia/sfm/camera/camera.h"
 #include "theia/sfm/types.h"
@@ -83,21 +80,6 @@ class TwoViewInfo {
   int visibility_score;
 
  private:
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    ar(focal_length_1,
-       focal_length_2,
-       position_2,
-       rotation_2,
-       num_verified_matches,
-       num_homography_inliers);
-    if (version > 0) {
-      ar(visibility_score);
-    }
-  }
 };
 
 // Inverts the two view info such that the focal lengths are swapped and the
@@ -141,7 +123,5 @@ void TwoViewInfoFromTwoCameras(const Camera& camera1,
 }
 
 }  // namespace theia
-
-CEREAL_CLASS_VERSION(theia::TwoViewInfo, 1);
 
 #endif  // THEIA_SFM_TWOVIEW_INFO_H_

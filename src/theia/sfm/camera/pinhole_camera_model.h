@@ -35,10 +35,6 @@
 #ifndef THEIA_SFM_CAMERA_PINHOLE_CAMERA_MODEL_H_
 #define THEIA_SFM_CAMERA_PINHOLE_CAMERA_MODEL_H_
 
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/base_class.hpp>
-#include <cereal/types/polymorphic.hpp>
 #include <ceres/ceres.h>
 #include <stdint.h>
 #include <Eigen/Core>
@@ -163,19 +159,6 @@ class PinholeCameraModel : public CameraIntrinsicsModel {
   double RadialDistortion2() const;
 
  private:
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    if (version > 0) {
-      ar(cereal::base_class<CameraIntrinsicsModel>(this));
-    } else {
-      CHECK_EQ(this->parameters_.size(), NumParameters());
-      ar(cereal::binary_data(this->parameters_.data(),
-                             sizeof(double) * NumParameters()));
-    }
-  }
 };
 
 template <typename T>
@@ -297,12 +280,5 @@ void PinholeCameraModel::UndistortPoint(const T* intrinsic_parameters,
 
 }  // namespace theia
 
-#include <cereal/archives/portable_binary.hpp>
-
-CEREAL_CLASS_VERSION(theia::PinholeCameraModel, 1)
-// Register the polymorphic relationship for serialization.
-CEREAL_REGISTER_TYPE(theia::PinholeCameraModel)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(theia::CameraIntrinsicsModel,
-                                     theia::PinholeCameraModel)
 
 #endif  // THEIA_SFM_CAMERA_PINHOLE_CAMERA_MODEL_H_

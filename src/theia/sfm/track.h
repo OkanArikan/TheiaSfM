@@ -35,14 +35,10 @@
 #ifndef THEIA_SFM_TRACK_H_
 #define THEIA_SFM_TRACK_H_
 
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/unordered_set.hpp>
 #include <Eigen/Core>
 #include <stdint.h>
 #include <unordered_set>
 
-#include "theia/io/eigen_serializable.h"
 #include "theia/sfm/types.h"
 
 namespace theia {
@@ -74,14 +70,6 @@ class Track {
   const std::unordered_set<ViewId>& ViewIds() const;
 
  private:
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    ar(is_estimated_, view_ids_, point_, color_);
-  }
-
   bool is_estimated_;
   std::unordered_set<ViewId> view_ids_;
   Eigen::Vector4d point_;
@@ -90,6 +78,5 @@ class Track {
 
 }  // namespace theia
 
-CEREAL_CLASS_VERSION(theia::Track, 0);
 
 #endif  // THEIA_SFM_TRACK_H_

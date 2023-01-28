@@ -35,9 +35,6 @@
 #ifndef THEIA_MATCHING_IMAGE_PAIR_MATCH_H_
 #define THEIA_MATCHING_IMAGE_PAIR_MATCH_H_
 
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/vector.hpp>
 #include <stdint.h>
 #include <string>
 #include <vector>

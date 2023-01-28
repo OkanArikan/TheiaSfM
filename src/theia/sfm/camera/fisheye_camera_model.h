@@ -36,10 +36,6 @@
 #define THEIA_SFM_CAMERA_FISHEYE_CAMERA_MODEL_H_
 
 #include <ceres/jet.h>
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/base_class.hpp>
-#include <cereal/types/polymorphic.hpp>
 #include <stdint.h>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -150,13 +146,6 @@ class FisheyeCameraModel : public CameraIntrinsicsModel {
   double RadialDistortion4() const;
 
  private:
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    ar(cereal::base_class<CameraIntrinsicsModel>(this));
-  }
 };
 
 template <typename T>
@@ -336,12 +325,5 @@ void FisheyeCameraModel::UndistortPoint(const T* intrinsic_parameters,
 
 }  // namespace theia
 
-#include <cereal/archives/portable_binary.hpp>
-
-CEREAL_CLASS_VERSION(theia::FisheyeCameraModel, 0)
-// Register the polymorphic relationship for serialization.
-CEREAL_REGISTER_TYPE(theia::FisheyeCameraModel)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(theia::CameraIntrinsicsModel,
-                                     theia::FisheyeCameraModel)
 
 #endif  // THEIA_SFM_CAMERA_FISHEYE_CAMERA_MODEL_H_

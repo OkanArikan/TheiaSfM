@@ -35,9 +35,6 @@
 #ifndef THEIA_SFM_CAMERA_CAMERA_INTRINSICS_MODEL_H_
 #define THEIA_SFM_CAMERA_CAMERA_INTRINSICS_MODEL_H_
 
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/vector.hpp>
 #include <stdint.h>
 #include <Eigen/Core>
 #include <memory>
@@ -209,17 +206,8 @@ class CameraIntrinsicsModel {
  protected:
   std::vector<double> parameters_;
 
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    ar(parameters_);
-  }
 };
 
 }  // namespace theia
-
-CEREAL_CLASS_VERSION(theia::CameraIntrinsicsModel, 0)
 
 #endif  // THEIA_SFM_CAMERA_CAMERA_INTRINSICS_MODEL_H_

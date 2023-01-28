@@ -37,10 +37,6 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/base_class.hpp>
-#include <cereal/types/polymorphic.hpp>
 #include <ceres/jet.h>
 #include <stdint.h>
 #include <vector>
@@ -158,13 +154,6 @@ class DivisionUndistortionCameraModel : public CameraIntrinsicsModel {
   double RadialDistortion1() const;
 
  private:
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    ar(cereal::base_class<CameraIntrinsicsModel>(this));
-  }
 };
 
 // In the division model, the distortion is applied after the focal length is
@@ -336,12 +325,5 @@ void DivisionUndistortionCameraModel::DistortedPixelToUndistortedPixel(
 
 }  // namespace theia
 
-#include <cereal/archives/portable_binary.hpp>
-
-CEREAL_CLASS_VERSION(theia::DivisionUndistortionCameraModel, 0)
-// Register the polymorphic relationship for serialization.
-CEREAL_REGISTER_TYPE(theia::DivisionUndistortionCameraModel)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(theia::CameraIntrinsicsModel,
-                                     theia::DivisionUndistortionCameraModel)
 
 #endif  // THEIA_SFM_CAMERA_DIVISION_UNDISTORTION_CAMERA_MODEL_H_

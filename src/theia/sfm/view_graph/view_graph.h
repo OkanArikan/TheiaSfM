@@ -35,12 +35,6 @@
 #ifndef THEIA_SFM_VIEW_GRAPH_VIEW_GRAPH_H_
 #define THEIA_SFM_VIEW_GRAPH_VIEW_GRAPH_H_
 
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/string.hpp>
-#include <cereal/types/unordered_map.hpp>
-#include <cereal/types/unordered_set.hpp>
-#include <cereal/types/utility.hpp>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -59,10 +53,6 @@ namespace theia {
 class ViewGraph {
  public:
   ViewGraph() {}
-
-  // Utilities to read and write a view graph to/from disk.
-  bool ReadFromDisk(const std::string& input_filepath);
-  bool WriteToDisk(const std::string& output_filepath);
 
   // Number of views in the graph.
   int NumViews() const;
@@ -122,14 +112,6 @@ class ViewGraph {
       std::unordered_set<ViewId>* largest_cc) const;
 
  private:
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    ar(vertices_, edges_);
-  }
-
   // The underlying adjacency map. ViewIds are the vertices which are mapped to
   // a collection of its neighbors and the edges themselves are stored
   // separately.
@@ -139,6 +121,5 @@ class ViewGraph {
 
 }  // namespace theia
 
-CEREAL_CLASS_VERSION(theia::ViewGraph, 0)
 
 #endif  // THEIA_SFM_VIEW_GRAPH_VIEW_GRAPH_H_

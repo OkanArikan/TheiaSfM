@@ -43,7 +43,7 @@ namespace theia {
 // vector throughout optimization.
 struct UnitNormThreeVectorParameterization {
   template<typename T>
-  bool operator()(const T* x, const T* delta, T* x_plus_delta) const {
+  bool Plus(const T* x, const T* delta, T* x_plus_delta) const {
     x_plus_delta[0] = x[0] + delta[0];
     x_plus_delta[1] = x[1] + delta[1];
     x_plus_delta[2] = x[2] + delta[2];
@@ -59,6 +59,24 @@ struct UnitNormThreeVectorParameterization {
 
     return true;
   }
+    
+    template<typename T>
+    bool Minus(const T* x, const T* delta, T* x_plus_delta) const {
+      x_plus_delta[0] = x[0] - delta[0];
+      x_plus_delta[1] = x[1] - delta[1];
+      x_plus_delta[2] = x[2] - delta[2];
+      const T sq_norm = x_plus_delta[0] * x_plus_delta[0] +
+                        x_plus_delta[1] * x_plus_delta[1] +
+                        x_plus_delta[2] * x_plus_delta[2];
+      if (sq_norm > T(0.0)) {
+        const T norm = sqrt(sq_norm);
+        x_plus_delta[0] /= norm;
+        x_plus_delta[1] /= norm;
+        x_plus_delta[2] /= norm;
+      }
+
+      return true;
+    }
 };
 
 }  // namespace theia

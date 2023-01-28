@@ -34,7 +34,6 @@
 
 #include "theia/sfm/view_graph/view_graph.h"
 
-#include <cereal/archives/portable_binary.hpp>
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>   // NOLINT
@@ -54,33 +53,6 @@ namespace theia {
 int ViewGraph::NumViews() const { return vertices_.size(); }
 
 int ViewGraph::NumEdges() const { return edges_.size(); }
-
-// Utilities to read and write a view graph to/from disk.
-bool ViewGraph::ReadFromDisk(const std::string& input_file) {
-  std::ifstream input_reader(input_file, std::ios::in | std::ios::binary);
-  if (!input_reader.is_open()) {
-    LOG(ERROR) << "Could not open the file: " << input_file << " for reading.";
-    return false;
-  }
-
-  cereal::PortableBinaryInputArchive input_archive(input_reader);
-  input_archive(*this);
-
-  return true;
-}
-
-bool ViewGraph::WriteToDisk(const std::string& output_file) {
-  std::ofstream output_writer(output_file, std::ios::out | std::ios::binary);
-  if (!output_writer.is_open()) {
-    LOG(ERROR) << "Could not open the file: " << output_file << " for writing.";
-    return false;
-  }
-
-  cereal::PortableBinaryOutputArchive output_archive(output_writer);
-  output_archive(*this);
-
-  return true;
-}
 
 // Returns a set of the ViewIds contained in the view graph.
 std::unordered_set<ViewId> ViewGraph::ViewIds() const {

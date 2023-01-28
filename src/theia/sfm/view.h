@@ -35,10 +35,6 @@
 #ifndef THEIA_SFM_VIEW_H_
 #define THEIA_SFM_VIEW_H_
 
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/string.hpp>
-#include <cereal/types/unordered_map.hpp>
 #include <stdint.h>
 #include <string>
 #include <unordered_map>
@@ -85,13 +81,6 @@ class View {
   bool RemoveFeature(const TrackId track_id);
 
  private:
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    ar(name_, is_estimated_, camera_, camera_intrinsics_prior_, features_);
-  }
 
   std::string name_;
   bool is_estimated_;
@@ -101,7 +90,5 @@ class View {
 };
 
 }  // namespace theia
-
-CEREAL_CLASS_VERSION(theia::View, 0);
 
 #endif  // THEIA_SFM_VIEW_H_

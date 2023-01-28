@@ -35,9 +35,6 @@
 #ifndef THEIA_SFM_CAMERA_CAMERA_H_
 #define THEIA_SFM_CAMERA_CAMERA_H_
 
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/memory.hpp>
 #include <glog/logging.h>
 #include <stdint.h>
 #include <Eigen/Core>
@@ -200,49 +197,6 @@ class Camera {
   static const int kExtrinsicsSize = 6;
 
  private:
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    if (version > 0) {
-      ar(cereal::binary_data(camera_parameters_,
-                             sizeof(double) * kExtrinsicsSize),
-         camera_intrinsics_,
-         cereal::binary_data(image_size_, sizeof(int) * 2));
-    } else {
-      CHECK(GetCameraIntrinsicsModelType() ==
-            CameraIntrinsicsModelType::PINHOLE)
-          << "the theia::Camera class version " << version
-          << " can only serialize Pinhole cameras. Please make sure all "
-             "cameras are set as pinhole cameras";
-      const int num_parameters =
-          kExtrinsicsSize + camera_intrinsics_->NumParameters();
-      std::vector<double> parameters(num_parameters);
-
-      // Copy the extrinsics and intrinsics into the vector.
-      std::copy(camera_parameters_,
-                camera_parameters_ + kExtrinsicsSize,
-                parameters.data());
-      std::copy(camera_intrinsics_->parameters(),
-                camera_intrinsics_->parameters() +
-                    camera_intrinsics_->NumParameters(),
-                parameters.data() + kExtrinsicsSize);
-
-      // I/O with the serialization.
-      ar(cereal::binary_data(parameters.data(),
-                             sizeof(double) * num_parameters),
-         cereal::binary_data(image_size_, sizeof(int) * 2));
-
-      // Copy the extrinsics and intrinsics back into the local variables.
-      std::copy(parameters.data(),
-                parameters.data() + kExtrinsicsSize,
-                camera_parameters_);
-      std::copy(parameters.data() + kExtrinsicsSize,
-                parameters.data() + num_parameters,
-                camera_intrinsics_->mutable_parameters());
-    }
-  }
 
   double camera_parameters_[kExtrinsicsSize];
 
@@ -253,7 +207,5 @@ class Camera {
 };
 
 }  // namespace theia
-
-CEREAL_CLASS_VERSION(theia::Camera, 1);
 
 #endif  // THEIA_SFM_CAMERA_CAMERA_H_

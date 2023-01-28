@@ -35,10 +35,6 @@
 #ifndef THEIA_SFM_RECONSTRUCTION_H_
 #define THEIA_SFM_RECONSTRUCTION_H_
 
-#include <cereal/access.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/types/string.hpp>
-#include <cereal/types/unordered_map.hpp>
 #include <stdint.h>
 #include <string>
 #include <unordered_map>
@@ -152,20 +148,6 @@ class Reconstruction {
                             Reconstruction* subreconstruction) const;
 
  private:
-  // Templated method for disk I/O with cereal. This method tells cereal which
-  // data members should be used when reading/writing to/from disk.
-  friend class cereal::access;
-  template <class Archive>
-  void serialize(Archive& ar, const std::uint32_t version) {  // NOLINT
-    ar(next_track_id_,
-       next_view_id_,
-       view_name_to_id_,
-       views_,
-       tracks_,
-       view_id_to_camera_intrinsics_group_id_,
-       camera_intrinsics_groups_);
-  }
-
   TrackId next_track_id_;
   ViewId next_view_id_;
   CameraIntrinsicsGroupId next_camera_intrinsics_group_id_;
@@ -181,7 +163,5 @@ class Reconstruction {
 };
 
 }  // namespace theia
-
-CEREAL_CLASS_VERSION(theia::Reconstruction, 0);
 
 #endif  // THEIA_SFM_RECONSTRUCTION_H_

@@ -39,7 +39,6 @@
 #include <functional>
 #include <utility>
 
-#include "theia/io/eigen_serializable.h"
 #include "theia/util/hash.h"
 
 namespace theia {
